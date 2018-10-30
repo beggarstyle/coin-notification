@@ -1,0 +1,9 @@
+{
+	"publicIp": "",
+	"coinAsset": {
+		"api_key": "",
+		"signature": ""
+	},
+	"lineToken": "",
+	"balances": []
+}
