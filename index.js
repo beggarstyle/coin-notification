@@ -40,7 +40,7 @@ program
   .option('-m, --more-than <moreThan>', 'Set More Then Price Target', Number)
   .option('-l, --less-than <lessThan>', 'Set Less Then Price Target', Number)
   // .option('-p, --price <price>', 'Set Price Target', Number)
-  .option('-n, --notification [notification]', 'Set Notification', 'pete')
+  .option('-n, --notification [notification]', 'Set Notification', Boolean, false)
   .option('-t, --times <times>', 'Set Time for Interval')
   .action((cmd) => Logical.trades(cmd))
 

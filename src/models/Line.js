@@ -2,7 +2,7 @@ const axios = require('axios')
 const qs = require('qs')
 const Fn = require('./Fn.js')
 
-module.exports.notification = async (target, message) => {
+module.exports.notification = async (message) => {
 	let data = { message: message }
 
 	const db = await Fn.loadDatabase()
@@ -10,7 +10,7 @@ module.exports.notification = async (target, message) => {
 	axios({
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
-			'Authorization': `Bearer ${db.lineToken[target.trim()]}`
+			'Authorization': `Bearer ${db.lineToken['pete']}`
 		},
 		method: 'post',
 		url: 'https://notify-api.line.me/api/notify',

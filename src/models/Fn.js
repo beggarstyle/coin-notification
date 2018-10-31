@@ -34,7 +34,7 @@ module.exports.hasPublicIp = (cmd) => {
 
       response.db.publicIp = response.publicIp
 
-      Line.notification('pete', `Your Public Ip is change: ${response.publicIp}`)
+      Line.notification(`Your Public Ip is change: ${response.publicIp}`)
 
       await this.writeDatabase(response.db)
     })
@@ -66,28 +66,37 @@ module.exports.orderBookManagement = (cmd, res) => {
 		asks: res.asks.price
 	})
 
-  console.table([modelsCoin])
+	console.table([modelsCoin])
 
-	if (cmd.watchBids && cmd.moreThan && (res.bids.price >= cmd.moreThan)) {
-		label.push(`Bids ${res.bids.price}`)
+	let condition = isMoreThanOrLessThan(cmd)
+	if (cmd.watchBids && isPriceMoreThan(cmd, res.bids.price)) {
+		label.push(`Bids ${res.bids.price} ${condition} ${cmd[condition]}`)
 	}
 
-	if (cmd.watchBids && cmd.lessThan && (res.bids.price <= cmd.lessThan)) {
-    label.push(`Bids ${res.bids.price}`)
+  if (cmd.watchAsks && isPriceMoreThan(cmd, res.asks.price)) {
+		label.push(`Asks ${res.asks.price} ${condition} ${cmd[condition]}`)
   }
 
-  if (cmd.watchAsks && cmd.moreThan && (res.asks.price >= cmd.moreThan)) {
-    label.push(`Asks ${res.asks.price}`)
-  }
+	// if (cmd.watchBids && cmd.moreThan && (res.bids.price >= cmd.moreThan)) {
+	// 	label.push(`Bids ${res.bids.price}`)
+	// }
 
-  if (cmd.watchAsks && cmd.lessThan && (res.bids.price <= cmd.lessThan)) {
-    label.push(`Asks ${res.asks.price}`)
-  }
+	// if (cmd.watchBids && cmd.lessThan && (res.bids.price <= cmd.lessThan)) {
+  //   label.push(`Bids ${res.bids.price}`)
+  // }
 
-  if (!cmd.notification) return false
+  // if (cmd.watchAsks && cmd.moreThan && (res.asks.price >= cmd.moreThan)) {
+  //   label.push(`Asks ${res.asks.price}`)
+  // }
+
+  // if (cmd.watchAsks && cmd.lessThan && (res.bids.price <= cmd.lessThan)) {
+  //   label.push(`Asks ${res.asks.price}`)
+  // }
+
+	if (!cmd.notification) return false
 
 	if (!label.length) return false
-	Line.notification(cmd.notification, label.join(' '))
+	Line.notification(label.join(' '))
 }
 
 module.exports.storeBalances = async (cmd, res) => {
@@ -147,4 +156,14 @@ module.exports.lists = (symbol) => { return symbol.split(',') }
 
 module.exports.converterMinutes = (minutes) => {
 	return (minutes * 60) * 1000
+}
+
+const isMoreThanOrLessThan = (cmd) => {
+	return (!! cmd.moreThan) ? 'moreThan' : 'lessThan'
+}
+const isPriceMoreThan = (cmd, price) => {
+	let condition = isMoreThanOrLessThan(cmd)
+	if (condition === 'moreThan') return price >= cmd['moreThan']
+
+	return price <= cmd['lessThan']
 }
